@@ -1,0 +1,344 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset="utf-8">
+    <title>layui</title>
+    <meta name="renderer" content="webkit">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+    <script src="../layui/layui.js"></script>
+    <link href="../layui/css/layui.css" rel="stylesheet" />
+</head>
+
+<body>
+    <form class="layui-form" onsubmit="return false" style="margin-top:20px;">
+        <input type="hidden" name="id" id="id" value="" />
+        <div class="layui-form-item">
+            <label class="layui-form-label">课程小类</label>
+            <div class="layui-input-inline">
+                <select name="categorySubId" id="categorySubId" lay-filter='selectclass'>
+                    <option value="" id="defaultoption_class">请选择</option>
+                    <option value="1" id="defaultoption_class">英语——自然科学</option>
+                    <option value="2" id="defaultoption_class">英语——人文艺术</option>
+                    <option value="3" id="defaultoption_class">英语——成长健康</option>
+                </select>
+            </div>
+        </div>
+        <div class="layui-form-item">
+            <div class="layui-inline">
+                <label class="layui-form-label">课程名称</label>
+                <div class="layui-input-inline">
+                    <input type="text" name="name" lay-verify="required" autocomplete="off" class="layui-input">
+                </div>
+            </div>
+        </div>
+        <div class="layui-form-item">
+            <div class="layui-inline">
+                <label class="layui-form-label">课程标识</label>
+                <div class="layui-input-inline">
+                    <input type="text" name="sourceSn" lay-verify="required" id="sourceSn"  autocomplete="off" class="layui-input">
+                </div>
+            </div>
+        </div>
+
+
+        <div class="layui-form-item">
+            <label class="layui-form-label">上传图片<span style="color:red;font-size:x-large">*</span></label>
+            <div class="layui-inline">
+                <button type="button" class="layui-btn" id="detail_btn">购买详情图</button><input class="layui-upload-file"
+                    type="file" accept="" name="detail">
+            </div>
+            <div class="layui-inline">
+                <button type="button" class="layui-btn" id="phone_btn">课程列表图(手机)</button><input
+                    class="layui-upload-file" type="file" accept="" name="phone">
+            </div>
+            <div class="layui-inline">
+                <button type="button" class="layui-btn" id="pad_btn">课程列表图(pad)</button><input class="layui-upload-file"
+                    type="file" accept="" name="pad">
+            </div>
+        </div>
+        <div class="layui-form-item">
+            <label class="layui-form-label"></label>
+            <div class="layui-inline">
+                <img class="layui-upload-img" id="detailImg">
+                <input type="hidden" name="detailImgId" id="detailImgId" lay-verify="required" value="" />
+                <input type="hidden" name="detailImgUrl" id="detailImgUrl" lay-verify="required" value="" />
+            </div>
+            <div class="layui-inline">
+                <img class="layui-upload-img" id="detailPhoneImg">
+                <input type="hidden" name="detailPhoneImgId" id="detailPhoneImgId" lay-verify="required" value="" />
+                <input type="hidden" name="detailPhoneImgUrl" id="detailPhoneImgUrl" lay-verify="required" value="" />
+            </div>
+            <div class="layui-inline">
+                <img class="layui-upload-img" id="detailPadImg">
+                <input type="hidden" name="detailPadId" id="detailPadId" lay-verify="required" value="" />
+                <input type="hidden" name="detailPadUrl" id="detailPadUrl" lay-verify="required" value="" />
+            </div>
+        </div>
+        <div style="float:right;margin-right:100px;">
+            <div class="layui-input-block">
+                <button type="button" class="layui-btn" lay-submit lay-filter="go">提交</button>
+                <button type="reset" class="layui-btn layui-btn-primary">重置</button>
+            </div>
+        </div>
+    </form>
+</body>
+
+</html>
+<style>
+    .layui-upload-img {
+        width: 78px;
+        height: 92px;
+        margin: 0 0 10px 0;
+    }
+
+    img[src=""],
+    img:not([src]) {
+        opacity: 0;
+    }
+</style>
+<script>
+    layui.use(['form', 'jquery'], function () {
+        var form = layui.form; //只有执行了这一步，部分表单元素才会自动修饰成功
+        var $ = layui.$;
+        $(function () {
+            // BindSelect(form);
+            // var id = parent.layui.$("#idStr").val();
+            var idArray = GetRequest();
+            if (idArray.sourceSn.length > 0) {
+                $.ajax({
+                    url: parent.Domain+'api/class/get',
+                    type: 'Get',
+                    data: { sourceSn: idArray.sourceSn },
+                    dataType: 'json',
+                    success: function (res) {
+                        console.log(res);
+                        if (res.data.sourceSn.length > 0) {
+                            $("input[name='sourceSn']").addClass("layui-btn-disabled");
+                            $("input[name='sourceSn']").attr("disabled","disabled");
+                            $("input[name='name']").val(res.data.name);
+                            $("input[name='sourceSn']").val(res.data.sourceSn);
+                            for (i = 0; i < res.data.imageList.length; i++) {
+                                if (res.data.imageList[i].mark == "BUY_DETAILS") {
+                                    $("#detailImg").attr("src", res.data.imageList[i].url);
+                                    $("input[name='detailImgId']").val(res.data.imageList[i].imageId);
+                                    $("input[name='detailImgUrl']").val(res.data.imageList[i].url);
+                                } else if (res.data.imageList[i].mark == "LIST_PHONE") {
+                                    $("#detailPhoneImg").attr("src", res.data.imageList[i].url);
+                                    $("input[name='detailPhoneImgId']").val(res.data.imageList[i].imageId);
+                                    $("input[name='detailPhoneImgUrl']").val(res.data.imageList[i].url);
+                                } else if (res.data.imageList[i].mark == "LIST_PAD") {
+                                    $("#detailPadImg").attr("src", res.data.imageList[i].url);
+                                    $("input[name='detailPadId']").val(res.data.imageList[i].imageId);
+                                    $("input[name='detailPadUrl']").val(res.data.imageList[i].url);
+                                } else {
+                                }
+                            }
+                            $("#categorySubId").find("option[value=" + res.data.categorySubId + "]").prop("selected", true);
+                            form.render();
+                        }
+                    }
+                });
+            }
+        })
+        //监听提交事件
+        form.on('submit(go)', function (data) {
+            $.ajax({
+                url: parent.Domain+'api/class/save',
+                type: 'Post',
+                contentType: 'application/json',
+                data: JSON.stringify({
+                    id: data.field.id,
+                    categorySubId: data.field.categorySubId,
+                    name: data.field.name,
+                    sourceSn: data.field.sourceSn,
+                    imageList: [
+                        {
+                            "imageId": data.field.detailImgId,
+                            "mark": "BUY_DETAILS",
+                            "url": data.field.detailImgUrl
+                        },
+                        {
+                            "imageId": data.field.detailPhoneImgId,
+                            "mark": "LIST_PHONE",
+                            "url": data.field.detailPhoneImgUrl
+                        },
+                        {
+                            "imageId": data.field.detailPadId,
+                            "mark": "LIST_PAD",
+                            "url": data.field.detailPadUrl
+                        }
+                    ],
+                }),
+                dataType: 'json',
+                success: function (res) {
+                    if (res.code == 200) {
+                        parent.window['bodyPage'].layui.table.reload("classinfo_id");//刷新父页面表格
+                        parent.layer.msg(res.msg, {
+                            time: 3000,
+                            anim: 4
+                        });
+                        var index = parent.layer.getFrameIndex(window.name); //先得到当前iframe层的索引
+                        parent.layer.close(index); //再执行关闭
+                    } else if (res.code == -1) {
+                        parent.layer.msg(res.msg, {
+                            time: 3000,
+                            anim: 6
+                        })
+                    } else {
+                        return;
+                    }
+                }
+            });
+
+        });
+        //form.render();
+
+    });
+    layui.use('upload', function () {
+        var $ = layui.jquery
+            , upload = layui.upload;
+
+        //图片上传
+        var uploaddetailImage = upload.render({
+            elem: '#detail_btn'
+            , url: parent.Domain+'api/file/upload'
+            , before: function (obj) {
+                //预读本地文件示例，不支持ie8
+                obj.preview(function (index, file, result) {
+                    $('#detailImg').attr('src', result); //图片链接（base64）
+                });
+            }
+            , done: function (res) {
+                //如果上传失败
+                if (res.code == 200) {//上传成功
+                    console.log(res);
+                    $("#detailImgId").val(res.data.id);
+                    $("#detailImgUrl").val(res.data.url);
+                } else if (res.code == -1) {
+                    layer.msg(res.msg, {
+                        time: 3000,
+                        anim: 6
+                    });
+                }
+                else {
+                    return;
+                }
+            }
+            , error: function () {
+                //演示失败状态，并实现重传
+                var demoText = $('#demoText');
+                demoText.html('<span style="color: #FF5722;">上传失败</span> <a class="layui-btn layui-btn-xs demo-reload">重试</a>');
+                demoText.find('.demo-reload').on('click', function () {
+                    uploaddetailImage.upload();
+                });
+            }
+        });
+
+
+        var uploaddetailPhoneImg = upload.render({
+            elem: '#phone_btn'
+            , url: parent.Domain+'api/file/upload'
+            , before: function (obj) {
+                //预读本地文件示例，不支持ie8
+                obj.preview(function (index, file, result) {
+                    $('#detailPhoneImg').attr('src', result); //图片链接（base64）
+                });
+            }
+            , done: function (res) {
+                //如果上传失败
+                if (res.code == 200) {//上传成功
+                    $("#detailPhoneImgId").val(res.data.id);
+                    $("#detailPhoneImgUrl").val(res.data.url);
+                } else if (res.code == -1) {
+                    layer.msg(res.msg, {
+                        time: 3000,
+                        anim: 6
+                    });
+                }
+                else {
+                    return;
+                }
+            }
+            , error: function () {
+                //演示失败状态，并实现重传
+                var demoText = $('#demoText');
+                demoText.html('<span style="color: #FF5722;">上传失败</span> <a class="layui-btn layui-btn-xs demo-reload">重试</a>');
+                demoText.find('.demo-reload').on('click', function () {
+                    uploaddetailPhoneImg.upload();
+                });
+            }
+        });
+
+        var uploadoutlineImage = upload.render({
+            elem: '#pad_btn'
+            , url: parent.Domain+'api/file/upload'
+            , before: function (obj) {
+                //预读本地文件示例，不支持ie8
+                obj.preview(function (index, file, result) {
+                    $('#detailPadImg').attr('src', result); //图片链接（base64）
+                });
+            }
+            , done: function (res) {
+                //如果上传失败
+                if (res.code == 200) {//上传成功
+                    $("#detailPadId").val(res.data.id);
+                    $("#detailPadUrl").val(res.data.url);
+                } else if (res.code == -1) {
+                    layer.msg(res.msg, {
+                        time: 3000,
+                        anim: 6
+                    });
+                }
+                else {
+                    return;
+                }
+            }
+            , error: function () {
+                //演示失败状态，并实现重传
+                var demoText = $('#demoText');
+                demoText.html('<span style="color: #FF5722;">上传失败</span> <a class="layui-btn layui-btn-xs demo-reload">重试</a>');
+                demoText.find('.demo-reload').on('click', function () {
+                    uploadoutlineImage.upload();
+                });
+            }
+        });
+
+
+
+    });
+    function BindSelect(form) {
+        layui.use(['jquery', 'layer'], function () {
+            var $ = layui.$;
+            $.ajax({
+                url: parent.Domain+"api/class/listClassVo",
+                type: 'Get',
+                async:false,
+                dataType: 'json',
+                success: function (response) {
+                    var data = response.data;
+                    $.each(data, function (index, item) {
+                        $("#selectclass").append(new Option(item.name, item.id));
+                    })
+                    form.render('select');
+                }
+            });
+            
+        });
+
+    }
+    function GetRequest() {
+        var url = location.search;   //获取url中"?"符后的字串   
+        var theRequest = new Object();
+        if (url.indexOf("?") != -1) {
+            var str = url.substr(1);
+            strs = str.split("&");
+            for (var i = 0; i < strs.length; i++) {
+                theRequest[strs[i].split("=")[0]] = unescape(strs[i].split("=")[1]);
+            }
+        }
+        return theRequest;
+    }
+
+</script>
