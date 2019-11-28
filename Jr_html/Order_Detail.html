@@ -1,0 +1,201 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset="utf-8">
+    <title>layui</title>
+    <meta name="renderer" content="webkit">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+    <script src="../layui/layui.js"></script>
+    <link href="../layui/css/layui.css" rel="stylesheet" />
+</head>
+<style type="text/css">
+    .Category {
+        float: left;
+        display: block;
+        padding: 9px 15px;
+        width: 200px;
+        font-weight: 400;
+        line-height: 20px;
+        text-align: right;
+        color: #607B8B;
+        font-style: italic;
+    }
+
+    .CategoryValue {
+        float: left;
+        display: block;
+        padding: 9px 15px;
+        width: 200px;
+        font-weight: 400;
+        line-height: 20px;
+        text-align: left;
+        color: darkgray;
+    }
+    .CategoryDiv{
+        margin-bottom: 5px;
+    }
+</style>
+
+<body>
+    <form class="layui-form" onsubmit="return false" style="margin-top:20px;">
+        <input type="hidden" name="id" id="id" value="" />
+        <div class="layui-form-item CategoryDiv">
+            <div class="layui-inline">
+                <label class="Category">订单号：</label>
+                <div class="layui-input-inline">
+                    <label class="CategoryValue" name="thirdOrderNo"></label>
+                </div>
+               
+            </div>
+        </div>
+        <div class="layui-form-item CategoryDiv">
+            <div class="layui-inline">
+                <label class="Category">产品标识：</label>
+                <div class="layui-input-inline">
+                    <label class="CategoryValue" name="productSn"></label>
+                </div>
+            </div>
+        </div>
+        <div class="layui-form-item CategoryDiv">
+            <div class="layui-inline">
+                <label class="Category">客户编号：</label>
+                <div class="layui-input-inline">
+                    <label class="CategoryValue" name="clientSn"></label>
+                </div>
+            </div>
+        </div>
+        <div class="layui-form-item CategoryDiv">
+            <div class="layui-inline">
+                <label class="Category">应付金额：</label>
+                <div class="layui-input-inline">
+                    <label class="CategoryValue" name="totalAmount"></label>
+                </div>
+            </div>
+        </div>
+        <div class="layui-form-item CategoryDiv">
+            <div class="layui-inline">
+                <label class="Category">实付金额：</label>
+                <div class="layui-input-inline">
+                    <label class="CategoryValue" name="amount"></label>
+                </div>
+            </div>
+        </div>
+        <div class="layui-form-item CategoryDiv">
+            <div class="layui-inline">
+                <label class="Category">支付方式：</label>
+                <div class="layui-input-inline">
+                    <label class="CategoryValue" name="paymentMode"></label>
+                </div>
+            </div>
+        </div>
+        <div class="layui-form-item CategoryDiv">
+            <div class="layui-inline">
+                <label class="Category">支付渠道：</label>
+                <div class="layui-input-inline">
+                    <label class="CategoryValue" name="payChannel"></label>
+                </div>
+            </div>
+        </div>
+        <div class="layui-form-item CategoryDiv">
+            <div class="layui-inline">
+                <label class="Category">下单时间：</label>
+                <div class="layui-input-inline">
+                    <label class="CategoryValue" name="created"></label>
+                </div>
+            </div>
+        </div>
+        <div class="layui-form-item CategoryDiv">
+            <div class="layui-inline">
+                <label class="Category">付款时间：</label>
+                <div class="layui-input-inline">
+                    <label class="CategoryValue" name="paidDate"></label>
+                </div>
+            </div>
+        </div>
+        <div class="layui-form-item CategoryDiv">
+            <div class="layui-inline">
+                <label class="Category">订单来源：</label>
+                <div class="layui-input-inline">
+                    <label class="CategoryValue" name="sourceId"></label>
+                </div>
+            </div>
+        </div>
+        <div class="layui-form-item CategoryDiv">
+            <div class="layui-inline">
+                <label class="Category">合约号：</label>
+                <div class="layui-input-inline">
+                    <label class="CategoryValue" name="contractSn"></label>
+                </div>
+            </div>
+        </div>
+        <div class="layui-form-item CategoryDiv">
+            <div class="layui-inline">
+                <label class="Category">银行流水号：</label>
+                <div class="layui-input-inline">
+                    <label class="CategoryValue" name="bankNo"></label>
+                </div>
+            </div>
+        </div>
+        <div class="layui-form-item CategoryDiv">
+            <div class="layui-inline">
+                <label class="Category">其他信息：</label>
+                <div class="layui-input-inline">
+                    <label class="CategoryValue" name="extData"></label>
+                </div>
+            </div>
+        </div>
+       
+    </form>
+</body>
+
+</html>
+<script>
+    layui.use(['form', 'jquery'], function () {
+        var form = layui.form; //只有执行了这一步，部分表单元素才会自动修饰成功
+        var $ = layui.$;
+        $(function () {
+            var idArry = GetRequest();
+            if (idArry.id > 0) {
+                $.ajax({
+                    url: parent.Domain + 'api/pay/get',
+                    type: 'Get',
+                    data: { id: idArry.id },
+                    dataType: 'json',
+                    success: function (res) {
+                        if (parseInt(res.data.id) > 0) {
+                            $("label[name='amount']").html(res.data.amount);
+                            $("label[name='bankNo']").html(res.data.bankNo);
+                            $("label[name='clientSn']").html(res.data.clientSn);
+                            $("label[name='contractSn']").html(res.data.contractSn);
+                            $("label[name='created']").html(res.data.created);
+                            $("label[name='createdAt']").html(res.data.createdAt);
+                            $("label[name='extData']").html(res.data.extData);
+                            $("label[name='paidDate']").html(res.data.paidDate);
+                            $("label[name='payChannel']").html(res.data.payChannel);
+                            $("label[name='paymentMode']").html(res.data.paymentMode);
+                            $("label[name='productSn']").html(res.data.productSn);
+                            $("label[name='sourceId']").html(res.data.sourceId);
+                            $("label[name='thirdOrderNo']").html(res.data.thirdOrderNo);
+                            $("label[name='totalAmount']").html(res.data.totalAmount);
+                        }
+                    }
+                });
+            }
+        })
+    });
+    //获取url中参数
+    function GetRequest() {
+        var url = location.search;   //获取url中"?"符后的字串   
+        var theRequest = new Object();
+        if (url.indexOf("?") != -1) {
+            var str = url.substr(1);
+            strs = str.split("&");
+            for (var i = 0; i < strs.length; i++) {
+                theRequest[strs[i].split("=")[0]] = unescape(strs[i].split("=")[1]);
+            }
+        }
+        return theRequest;
+    }
+</script>

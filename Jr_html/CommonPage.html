@@ -3,7 +3,7 @@
 <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
-    <title>layout 后台大布局 - Layui</title>
+    <title>AI真人课管理系统</title>
     <script src="../layui/layui.js"></script>
     <link href="../layui/css/layui.css" rel="stylesheet" />
     <!--<script src="../layui/lay/modules/layer.js"></script>-->
@@ -22,7 +22,7 @@
 <body class="layui-layout-body">
     <div class="layui-layout layui-layout-admin">
         <div class="layui-header">
-            <div class="layui-logo">vipjr</div>
+            <div class="layui-logo">vip Jr</div>
             <!-- 头部区域（可配合layui已有的水平导航） -->
             <ul class="layui-nav layui-layout-left">
                 <!-- <li class="layui-nav-item"><a href="">控制台</a></li>
@@ -73,7 +73,12 @@
                             <dd><a onclick="selectiframe('LessonSchedule_Index.html','课程信息','排课管理')">排课管理</a></dd>
                         </dl>
                     </li>
-                    <li class="layui-nav-item"><a >订单信息</a></li>
+                    <li class="layui-nav-item">
+                        <a class="" href="javascript:;">订单信息</a>
+                        <dl class="layui-nav-child">
+                            <dd><a onclick="selectiframe('Order_Index.html','订单信息','订单管理')">订单管理</a></dd>
+                        </dl>
+                    </li>
                     <li class="layui-nav-item"><a >其他统计</a></li>
                 </ul>
             </div>
@@ -99,7 +104,12 @@
         </div>
     </div>
     <script>
-        var Domain="http://192.168.86.171:8080/";
+        var Domain="http://172.16.235.19:8080/";//刘可本地服务器
+        //var Domain="http://172.16.235.20:8080/";//测试环境
+        
+
+
+
         //JavaScript代码区域
         //layui.use('jquery', function () {
         //    var $ = layui.$;
@@ -116,10 +126,7 @@
         //        layer.iframeAuto(index);
         //    })
         //})
-        function sss (){
-
-            alert(13);
-        }
+       
         layui.use(['element','layer'], function () {
             var element = layui.element;
         });

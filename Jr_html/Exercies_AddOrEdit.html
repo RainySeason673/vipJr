@@ -121,14 +121,16 @@
                         $("#selectclass").find("option[value=" + res.data.sourceSn + "]").prop("selected", true);
                             form.render();
                         if (parseInt(res.data.id) > 0) {
+                            console.log(res.data);
                             $("input[name='id']").val(res.data.id);
-                            $("input[name='username']").val(res.data.username);
-                            $("input[name='name']").val(res.data.name);
-                            $("input[name='englishname']").val(res.data.englishName);
-                            $("input[name='gender'][value='" + res.data.gender + "']").next().click();
-                            $("textarea[name='introduction']").val(res.data.introduction);
-                            $("#img").attr("src", res.data.headImg);
-                            $("input[name='img_id_hide']").val(res.data.headImg);
+                            $("input[name='exercisesTitle']").val(res.data.exercisesTitle);
+                            $("input[name='sort']").val(res.data.sort);
+                            $("textarea[name='exercisesContent']").val(res.data.exercisesContent);
+                            $("textarea[name='exercisesAnswer']").val(res.data.exercisesAnswer);
+                            $("input[name='exercisesType'][value='" + res.data.exercisesTypeId + "']").next().click();
+                            $("#img").attr("src", res.data.exercisesPicUrl);
+                            $("input[name='exercisesPicId']").val(res.data.exercisesPicId);
+                            $("input[name='exercisesPicUrl']").val(res.data.exercisesPicUrl);
                         }
                     }
                 });
@@ -176,6 +178,7 @@
 
     });
     layui.use('upload', function () {
+        var loadindex;
         var $ = layui.jquery
             , upload = layui.upload;
 
@@ -186,8 +189,10 @@
             , before: function (obj) {
                 //预读本地文件示例，不支持ie8
                 obj.preview(function (index, file, result) {
-
                     $('#img').attr('src', result); //图片链接（base64）
+                    loadindex = parent.layer.load(1, {
+                        shade: [0.5, '#fff'] //0.1透明度的白色背景
+                    });
                 });
             }
             , done: function (res) {
@@ -195,14 +200,13 @@
                 if (res.code == 200) {//上传成功
                     $("#exercisesPicId").val(res.data.id);
                     $("#exercisesPicUrl").val(res.data.url);
-                } else if (res.code == -1) {
+                    parent.layer.close(loadindex);
+                } else {
+                    parent.layer.close(loadindex);
                     layer.msg(res.msg, {
                         time: 3000,
                         anim: 6
                     });
-                }
-                else {
-                    return;
                 }
             }
             , error: function () {

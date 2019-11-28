@@ -99,7 +99,7 @@
                 }
                 , {field: 'lessonName', title: '课节名称', edit: 'text'}
                 , {field: 'sort', title: '序号', edit: 'text'}
-                , {field: 'createAt', width: 189, title: '创建时间'}
+                , {field: 'exercisesTypeName', width: 189, title: '习题类型'}
                 , { fixed: 'right', title: '操作', toolbar: '#barDemo' }
             ]]
             , page: true
@@ -114,7 +114,7 @@
                         var data = checkStatus.data;
                         var $ = layui.$;
                         $.ajax({
-                            url: parent.Domain+'api/exercises/delete',
+                            url: parent.Domain+'api/lesson/exercises/delete',
                             type: 'Post',
                             contentType: 'application/json',
                             data: JSON.stringify(data),

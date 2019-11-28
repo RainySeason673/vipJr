@@ -308,6 +308,7 @@
                     data: { sourceSn: data.value },//data.value即为selectclass的选中的值
                     dataType: 'json',
                     success: function (response) {
+                        $("#selectlesson").empty();
                         var data = response.data;
                         $.each(data, function (index, item) {
                             $("#selectlesson").append(new Option(item.name, item.id));

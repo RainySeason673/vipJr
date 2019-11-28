@@ -159,6 +159,7 @@
 
     });
     layui.use('upload', function () {
+        var loadindex;
         var $ = layui.jquery
             , upload = layui.upload;
 
@@ -169,22 +170,23 @@
             , before: function (obj) {
                 //预读本地文件示例，不支持ie8
                 obj.preview(function (index, file, result) {
-
                     $('#img').attr('src', result); //图片链接（base64）
+                    loadindex = parent.layer.load(1, {
+                        shade: [0.5, '#fff'] //0.1透明度的白色背景
+                    });
                 });
             }
             , done: function (res) {
                 //如果上传失败
                 if (res.code == 200) {//上传成功
                     $("#img_id_hide").val(res.data.id);
-                } else if (res.code == -1) {
+                    parent.layer.close(loadindex);
+                } else {
+                    parent.layer.close(loadindex);
                     layer.msg(res.msg, {
                         time: 3000,
                         anim: 6
                     });
-                }
-                else {
-                    return;
                 }
             }
             , error: function () {

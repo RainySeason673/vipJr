@@ -12,16 +12,18 @@
 </head>
 
 <body>
+    <input type="hidden" name="sourceSn_hide" id="sourceSn_hide" value="">
     <form class="layui-form" onsubmit="return false" style="margin-top:20px;">
         <input type="hidden" name="id" id="id" value="" />
+
         <div class="layui-form-item">
             <label class="layui-form-label">课程小类</label>
             <div class="layui-input-inline">
                 <select name="categorySubId" id="categorySubId" lay-filter='selectclass'>
                     <option value="" id="defaultoption_class">请选择</option>
-                    <option value="1" id="defaultoption_class">英语——自然科学</option>
-                    <option value="2" id="defaultoption_class">英语——人文艺术</option>
-                    <option value="3" id="defaultoption_class">英语——成长健康</option>
+                    <option value="1" id="english">英语——自然科学</option>
+                    <option value="2" id="art">英语——人文艺术</option>
+                    <option value="3" id="health">英语——成长健康</option>
                 </select>
             </div>
         </div>
@@ -29,7 +31,8 @@
             <div class="layui-inline">
                 <label class="layui-form-label">课程名称</label>
                 <div class="layui-input-inline">
-                    <input type="text" name="name" lay-verify="required" autocomplete="off" class="layui-input">
+                    <input type="text" name="name" id="name" lay-verify="required" autocomplete="off"
+                        class="layui-input">
                 </div>
             </div>
         </div>
@@ -37,7 +40,8 @@
             <div class="layui-inline">
                 <label class="layui-form-label">课程标识</label>
                 <div class="layui-input-inline">
-                    <input type="text" name="sourceSn" lay-verify="required" id="sourceSn"  autocomplete="off" class="layui-input">
+                    <input type="text" name="sourceSn" lay-verify="required" id="sourceSn" autocomplete="off"
+                        class="layui-input">
                 </div>
             </div>
         </div>
@@ -79,7 +83,7 @@
         <div style="float:right;margin-right:100px;">
             <div class="layui-input-block">
                 <button type="button" class="layui-btn" lay-submit lay-filter="go">提交</button>
-                <button type="reset" class="layui-btn layui-btn-primary">重置</button>
+                <button type="button" class="layui-btn layui-btn-primary" onclick="clearForm()">重置</button>
             </div>
         </div>
     </form>
@@ -108,7 +112,7 @@
             var idArray = GetRequest();
             if (idArray.sourceSn.length > 0) {
                 $.ajax({
-                    url: parent.Domain+'api/class/get',
+                    url: parent.Domain + 'api/class/get',
                     type: 'Get',
                     data: { sourceSn: idArray.sourceSn },
                     dataType: 'json',
@@ -116,7 +120,8 @@
                         console.log(res);
                         if (res.data.sourceSn.length > 0) {
                             $("input[name='sourceSn']").addClass("layui-btn-disabled");
-                            $("input[name='sourceSn']").attr("disabled","disabled");
+                            $("input[name='sourceSn']").attr("disabled", "disabled");
+                            $("input[name='sourceSn_hide']").val(res.data.sourceSn);
                             $("input[name='name']").val(res.data.name);
                             $("input[name='sourceSn']").val(res.data.sourceSn);
                             for (i = 0; i < res.data.imageList.length; i++) {
@@ -145,7 +150,7 @@
         //监听提交事件
         form.on('submit(go)', function (data) {
             $.ajax({
-                url: parent.Domain+'api/class/save',
+                url: parent.Domain + 'api/class/save',
                 type: 'Post',
                 contentType: 'application/json',
                 data: JSON.stringify({
@@ -197,33 +202,36 @@
 
     });
     layui.use('upload', function () {
+        var loadindex;
         var $ = layui.jquery
             , upload = layui.upload;
 
         //图片上传
         var uploaddetailImage = upload.render({
             elem: '#detail_btn'
-            , url: parent.Domain+'api/file/upload'
+            , url: parent.Domain + 'api/file/upload'
             , before: function (obj) {
                 //预读本地文件示例，不支持ie8
                 obj.preview(function (index, file, result) {
                     $('#detailImg').attr('src', result); //图片链接（base64）
+                     loadindex = parent.layer.load(1, {
+                        shade: [0.5, '#fff'] //0.1透明度的白色背景
+                    });
                 });
             }
             , done: function (res) {
                 //如果上传失败
                 if (res.code == 200) {//上传成功
-                    console.log(res);
                     $("#detailImgId").val(res.data.id);
                     $("#detailImgUrl").val(res.data.url);
-                } else if (res.code == -1) {
+                    console.log(loadindex);
+                    parent.layer.close(loadindex);
+                } else {
+                    parent.layer.close(loadindex);
                     layer.msg(res.msg, {
                         time: 3000,
                         anim: 6
                     });
-                }
-                else {
-                    return;
                 }
             }
             , error: function () {
@@ -239,11 +247,14 @@
 
         var uploaddetailPhoneImg = upload.render({
             elem: '#phone_btn'
-            , url: parent.Domain+'api/file/upload'
+            , url: parent.Domain + 'api/file/upload'
             , before: function (obj) {
                 //预读本地文件示例，不支持ie8
                 obj.preview(function (index, file, result) {
                     $('#detailPhoneImg').attr('src', result); //图片链接（base64）
+                    loadindex = parent.layer.load(1, {
+                        shade: [0.5, '#fff'] //0.1透明度的白色背景
+                    });
                 });
             }
             , done: function (res) {
@@ -251,14 +262,13 @@
                 if (res.code == 200) {//上传成功
                     $("#detailPhoneImgId").val(res.data.id);
                     $("#detailPhoneImgUrl").val(res.data.url);
-                } else if (res.code == -1) {
+                    parent.layer.close(loadindex);
+                } else  {
+                    parent.layer.close(loadindex);
                     layer.msg(res.msg, {
                         time: 3000,
                         anim: 6
                     });
-                }
-                else {
-                    return;
                 }
             }
             , error: function () {
@@ -273,11 +283,14 @@
 
         var uploadoutlineImage = upload.render({
             elem: '#pad_btn'
-            , url: parent.Domain+'api/file/upload'
+            , url: parent.Domain + 'api/file/upload'
             , before: function (obj) {
                 //预读本地文件示例，不支持ie8
                 obj.preview(function (index, file, result) {
                     $('#detailPadImg').attr('src', result); //图片链接（base64）
+                    loadindex = parent.layer.load(1, {
+                        shade: [0.5, '#fff'] //0.1透明度的白色背景
+                    });
                 });
             }
             , done: function (res) {
@@ -285,14 +298,13 @@
                 if (res.code == 200) {//上传成功
                     $("#detailPadId").val(res.data.id);
                     $("#detailPadUrl").val(res.data.url);
-                } else if (res.code == -1) {
+                    parent.layer.close(loadindex);
+                } else {
+                    parent.layer.close(loadindex);
                     layer.msg(res.msg, {
                         time: 3000,
                         anim: 6
                     });
-                }
-                else {
-                    return;
                 }
             }
             , error: function () {
@@ -312,9 +324,9 @@
         layui.use(['jquery', 'layer'], function () {
             var $ = layui.$;
             $.ajax({
-                url: parent.Domain+"api/class/listClassVo",
+                url: parent.Domain + "api/class/listClassVo",
                 type: 'Get',
-                async:false,
+                async: false,
                 dataType: 'json',
                 success: function (response) {
                     var data = response.data;
@@ -324,7 +336,7 @@
                     form.render('select');
                 }
             });
-            
+
         });
 
     }
@@ -340,5 +352,10 @@
         }
         return theRequest;
     }
-
+    function clearForm() {
+        document.getElementById("defaultoption_class").selected = true;
+        document.getElementById("name").value = "";
+        var form = layui.form;
+        form.render();
+    }
 </script>
