@@ -14,7 +14,8 @@
         <div class="layui-inline">
             <label class="layui-form-label">课节名称</label>
             <div class="layui-input-inline">
-                <input type="text" name="lessonName" id="lessonName" placeholder="请输入" autocomplete="off" class="layui-input">
+                <input type="text" name="lessonName" id="lessonName" placeholder="请输入" autocomplete="off"
+                    class="layui-input">
             </div>
         </div>
         <div class="layui-inline">
@@ -59,7 +60,7 @@
             elem: '#lessoninfo'
             , method: 'post'
             , contentType: 'application/json'
-            , url: parent.Domain+'api/lesson/list'
+            , url: parent.Domain + 'api/lesson/list'
             //,where:{pageSize:10,pageNum:1}
             , toolbar: '#toolbarDemo'
             , title: '课节信息表'
@@ -79,15 +80,15 @@
                 limitName: "pageSize"
             }
             , cols: [[
-                { type: 'checkbox', fixed: 'left' }
+                // { type: 'checkbox', fixed: 'left' }
                 // , { field: 'id', title: 'ID', fixed: 'left', width: 89, unresize: true, sort: true }
                 , { field: 'name', title: '名称', edit: 'text' }
                 , { field: 'className', title: '课程名称', edit: 'text' }
                 , { field: 'introduction', title: '介绍', edit: 'text' }
-                , {field: 'grammar', title: '语法', edit: 'text'}
-                , {field: 'learnTarget', title: '学习目标', edit: 'text'}
-                , {field: 'sentencePattern', title: '句型', edit: 'text'}
-                , {field: 'createAt', width: 189, title: '创建时间'}
+                , { field: 'grammar', title: '语法', edit: 'text' }
+                , { field: 'learnTarget', title: '学习目标', edit: 'text' }
+                , { field: 'sentencePattern', title: '句型', edit: 'text' }
+                , { field: 'createAt', width: 189, title: '创建时间' }
                 , { fixed: 'right', title: '操作', toolbar: '#barDemo' }
             ]]
             , page: true
@@ -96,13 +97,17 @@
         //监听头部工具栏事件
         table.on('toolbar(lessoninfo)', function (obj) {//
             var checkStatus = table.checkStatus(obj.config.id);
+            var data = checkStatus.data;
             switch (obj.event) {
                 case 'batchdel':
+                    if (!data.lenght > 0) {
+                        parent.layer.msg("您尚未选择任何数据！");
+                        return;
+                    }
                     layer.confirm('真的删除吗', function (index) {
-                        var data = checkStatus.data;
                         var $ = layui.$;
                         $.ajax({
-                            url: parent.Domain+'api/lesson/list',
+                            url: parent.Domain + 'api/lesson/list',
                             type: 'Post',
                             contentType: 'application/json',
                             data: JSON.stringify(data),
@@ -144,7 +149,7 @@
             }
         });
 
-       //监听行工具事件
+        //监听行工具事件
         table.on('tool(lessoninfo)', function (obj) {
             var data = obj.data;
             if (obj.event == 'del') {
@@ -153,9 +158,9 @@
                     layui.use('jquery', function () {
                         var $ = layui.$;
                         $.ajax({
-                            url: parent.Domain+'api/lesson/delete',
+                            url: parent.Domain + 'api/lesson/delete',
                             type: 'Post',
-                            data: {idList:data.ID,status:1},
+                            data: { idList: data.ID, status: 1 },
                             dataType: 'json',
                             success: function (res) {
                                 if (res.code == 200) {
@@ -182,10 +187,10 @@
                 $("#idStr").val(data.ID);
                 var index = top.layer.open({
                     type: 2,
-                    title: '编辑课节信息',
+                    title: '编辑课节',
                     skin: 'layui-layer-rim',//加上边框
                     area: ['820px', '720px'],
-                    content: 'Lesson_AddOrEdit.html'+"?id="+data.id,
+                    content: 'Lesson_AddOrEdit.html' + "?id=" + data.id,
                 });
             }
         });

@@ -60,7 +60,7 @@
             , url: parent.Domain+'api/teacher/list'
             //,where:{name:data.field.name}
             , toolbar: '#toolbarDemo'
-            , title: '教师信息表'
+            , title: '老师信息表'
             , parseData: function (res) {
                 return {
                     "code": res.code,
@@ -253,7 +253,7 @@
                 $("#idStr").val(data.id);
                 var index = top.layer.open({
                     type: 2,
-                    title: '编辑老师',
+                    title: '编辑老师信息',
                     skin: 'layui-layer-rim',//加上边框
                     area: ['820px', '680px'],
                     content: 'Teacher_AddOrEdit.html'+"?id="+data.id

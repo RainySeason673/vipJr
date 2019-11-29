@@ -93,10 +93,14 @@
         //监听头部工具栏事件
         table.on('toolbar(videoinfo)', function (obj) {//
             var checkStatus = table.checkStatus(obj.config.id);
+            var data = checkStatus.data;
             switch (obj.event) {
                 case 'batchdel':
+                if (!data.lenght > 0) {
+                        parent.layer.msg("您尚未选择任何数据！");
+                        return;
+                    }
                     layer.confirm('真的删除吗', function (index) {
-                        var data = checkStatus.data;
                         var idStr="";
                         var $ = layui.$;
                        for (i=0;i<data.length;i++)
@@ -172,20 +176,6 @@
 
                     });
                     break;
-                case 'add':
-                    $("#idStr").val("");
-                    parent.top.layer.open({
-                        type: 2,
-                        maxmin: true,
-                        shadeclose: true,
-                        id: 100,
-                        title: '添加老师',
-                        skin: 'layui-layer-rim',//加上边框
-                        area: ['820px', '680px'],
-                        content: 'Video_AddOrEdit.html',
-                    });
-
-                    break;
             }
         });
 
@@ -227,7 +217,7 @@
                 $("#idStr").val(data.ID);
                 var index = top.layer.open({
                     type: 2,
-                    title: '编辑老师',
+                    title: '编辑视频信息',
                     skin: 'layui-layer-rim',//加上边框
                     area: ['820px', '680px'],
                     content: 'Video_AddOrEdit.html'

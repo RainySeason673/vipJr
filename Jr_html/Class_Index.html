@@ -71,7 +71,6 @@
                 limitName: "pageSize"
             }
             , cols: [[
-                { type: 'checkbox', fixed: 'left' }
                 , { field: 'sourceSn', title: '课程标识', fixed: 'left',  unresize: true, sort: true }
                 , { field: 'name', title: '名称', edit: 'text' }
                 , { field: 'categoryName', title: '课程类别', edit: 'text' }
@@ -84,10 +83,14 @@
         //监听头部工具栏事件  TODO(左工说先放着，可能要改)
         table.on('toolbar(classinfo)', function (obj) {//
             var checkStatus = table.checkStatus(obj.config.id);
+            var data = checkStatus.data;
             switch (obj.event) {
                 case 'batchdel':
+                    if(!data.length>0){
+                        parent.layer.msg("您尚未选择任何数据！");
+                        return;
+                    }
                     layer.confirm('真的删除吗', function (index) {
-                        var data = checkStatus.data;
                         var $ = layui.$;
                         $.post(parent.Domain+"api/teacher/list", { jsonStr: JSON.stringify(data) }, function (res) {
                             if (res.code == 1) {
@@ -116,7 +119,7 @@
                         maxmin: true,
                         shadeclose: true,
                         id: 100,
-                        title: '添加老师',
+                        title: '添加课程',
                         skin: 'layui-layer-rim',//加上边框
                         area: ['820px', '520px'],
                         content: 'Class_AddOrEdit.html',
@@ -156,7 +159,7 @@
                 $("#idStr").val(data.sourceSn);
                 var index = top.layer.open({
                     type: 2,
-                    title: '编辑课程信息',
+                    title: '编辑课程',
                     skin: 'layui-layer-rim',//加上边框
                     area: ['820px', '520px'],
                     content: 'Class_AddOrEdit.html'+"?sourceSn="+data.sourceSn

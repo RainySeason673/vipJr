@@ -67,7 +67,7 @@
             , url: parent.Domain+'api/lesson/schedule/list'
             //,where:{lessonId:10,classId:1}
             , toolbar: '#toolbarDemo'
-            , title: '课节信息表'
+            , title: '排课信息表'
             , parseData: function (res) {
                 return {
                     "code": res.code,
@@ -98,10 +98,14 @@
         //监听头部工具栏事件
         table.on('toolbar(lessonscheduleinfo)', function (obj) {//
             var checkStatus = table.checkStatus(obj.config.id);
+            var data = checkStatus.data;
             switch (obj.event) {
                 case 'batchdel':
+                if (!data.lenght > 0) {
+                        parent.layer.msg("您尚未选择任何数据！");
+                        return;
+                    }
                     layer.confirm('确定要禁用所选数据吗', function (index) {
-                        var data = checkStatus.data;
                         var $ = layui.$;
                         $.ajax({
                             url: parent.Domain+'api/lesson/schedule/delete',
@@ -136,7 +140,7 @@
                         maxmin: true,
                         shadeclose: true,
                         id: 100,
-                        title: '添加课节',
+                        title: '添加排课',
                         skin: 'layui-layer-rim',//加上边框
                         area: ['820px', '720px'],
                         content: 'LessonSchedule_AddOrEdit.html',
@@ -184,7 +188,7 @@
                 $("#idStr").val(data.ID);
                 var index = top.layer.open({
                     type: 2,
-                    title: '编辑课节信息',
+                    title: '编辑排课信息',
                     skin: 'layui-layer-rim',//加上边框
                     area: ['820px', '720px'],
                     content: 'LessonSchedule_AddOrEdit.html'+"?id="+data.id,
@@ -271,6 +275,7 @@
                     dataType: 'json',
                     success: function (response) {
                         $("#selectlesson").empty();
+                        $("#selectlesson").append(new Option("请选择课节", ""));
                         var data = response.data;
                         $.each(data, function (index, item) {
                             $("#selectlesson").append(new Option(item.name, item.id));

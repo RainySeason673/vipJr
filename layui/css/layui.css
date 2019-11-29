@@ -882,6 +882,7 @@ a {
 	line-height: 44px;
 	padding: 0 15px;
 	background-color: #eee;
+	text-align: center;
 }
 
 .layui-layout-admin .layui-logo {
@@ -1661,7 +1662,7 @@ a {
 
 .layui-card-header {
 	position: relative;
-	height: 58px;/*Ô­À´42px*/
+	height: 58px;/*Ô­ï¿½ï¿½42px*/
 	line-height: 42px;
 	padding: 0 15px;
 	border-bottom: 1px solid #f6f6f6;

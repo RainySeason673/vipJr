@@ -12,7 +12,7 @@
 </head>
 
 <body>
-    <form class="layui-form" onsubmit="return false" style="margin-top:20px;">
+    <form class="layui-form" onsubmit="return false" id="wordform" style="margin-top:20px;">
         <input type="hidden" name="id" id="id" value="" />
         <div class="layui-form-item">
             <label class="layui-form-label">选择课节</label>
@@ -71,7 +71,7 @@
         <div style="float:right;margin-right:100px;">
             <div class="layui-input-block">
                 <button type="button" class="layui-btn" lay-submit lay-filter="go">提交</button>
-                <button type="reset" class="layui-btn layui-btn-primary">重置</button>
+                <button type="reset" class="layui-btn layui-btn-primary" onclick="clearDDL()">重置</button>
             </div>
         </div>
     </form>
@@ -248,6 +248,7 @@
                     dataType: 'json',
                     success: function (response) {
                         $("#selectlesson").empty();
+                        $("#selectlesson").append(new Option("请选择课节", ""));
                         var data = response.data;
                         $.each(data, function (index, item) {
                             $("#selectlesson").append(new Option(item.name, item.id));
@@ -272,5 +273,5 @@
         }
         return theRequest;
     }
-
+  
 </script>

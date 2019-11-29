@@ -17,12 +17,12 @@
         <div class="layui-form-item">
             <label class="layui-form-label">选择课节</label>
             <div class="layui-input-inline">
-                <select name="selectclass" id="selectclass" lay-filter='selectclass'>
+                <select name="selectclass" id="selectclass" lay-filter='selectclass' lay-verify="required">
                     <option value="" id="defaultoption_class">请选择课程</option>
                 </select>
             </div>
             <div class="layui-input-inline">
-                <select name="selectlesson" id="selectlesson">
+                <select name="selectlesson" id="selectlesson" lay-verify="required">
                     <option value="">请选择课节</option>
                 </select>
             </div>
@@ -252,6 +252,7 @@
                     dataType: 'json',
                     success: function (response) {
                         $("#selectlesson").empty();
+                        $("#selectlesson").append(new Option("请选择课节", ""));
                         var data = response.data;
                         $.each(data, function (index, item) {
                             $("#selectlesson").append(new Option(item.name, item.id));

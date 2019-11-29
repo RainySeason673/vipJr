@@ -66,10 +66,10 @@
             elem: '#wordinfo'
             , method: 'post'
             , contentType: 'application/json'
-            , url: parent.Domain+'api/lesson/word/list'
+            , url: parent.Domain + 'api/lesson/word/list'
             //,where:{pageSize:10,pageNum:1}
             , toolbar: '#toolbarDemo'
-            , title: '课节视频信息表'
+            , title: '课节单词信息表'
             , parseData: function (res) {
                 return {
                     "code": res.code,
@@ -99,10 +99,14 @@
         //监听头部工具栏事件
         table.on('toolbar(wordinfo)', function (obj) {//
             var checkStatus = table.checkStatus(obj.config.id);
+            var data = checkStatus.data;
             switch (obj.event) {
                 case 'batchdel':
-                parent.layer.confirm('真的删除吗', function (index) {
-                        var data = checkStatus.data;
+                    if (!data.length > 0) {
+                        parent.layer.msg("您尚未选择任何数据！");
+                        return;
+                    }
+                    parent.layer.confirm('真的删除吗', function (index) {
                         var idStr = "";
                         var $ = layui.$;
                         for (i = 0; i < data.length; i++) {
@@ -112,7 +116,7 @@
                             idStr = idStr.substring(0, idStr.lastIndexOf(','));
                         }
                         $.ajax({
-                            url: parent.Domain+'api/lesson/word/delete',
+                            url: parent.Domain + 'api/lesson/word/delete',
                             type: 'Post',
                             data: { idList: idStr, status: 1 },//1是代表删除，0是代表恢复
                             dataType: 'json',
@@ -139,8 +143,11 @@
                     });
                     break;
                 case 'batchrecovery':
+                    if (!data.length > 0) {
+                        parent.layer.msg("您尚未选择任何数据！");
+                        return;
+                    }
                     layer.confirm('真的恢复吗', function (index) {
-                        var data = checkStatus.data;
                         var idStr = "";
                         var $ = layui.$;
                         for (i = 0; i < data.length; i++) {
@@ -150,7 +157,7 @@
                             idStr = idStr.substring(0, idStr.lastIndexOf(','));
                         }
                         $.ajax({
-                            url: parent.Domain+'api/lesson/word/delete',
+                            url: parent.Domain + 'api/lesson/word/delete',
                             type: 'Post',
                             data: { idList: idStr, status: 0 },//1是代表删除，0是代表恢复
                             dataType: 'json',
@@ -202,7 +209,7 @@
                     layui.use('jquery', function () {
                         var $ = layui.$;
                         $.ajax({
-                            url: parent.Domain+'api/lesson/word/delete',
+                            url: parent.Domain + 'api/lesson/word/delete',
                             type: 'Post',
                             data: { idList: data.id, status: 1 },
                             dataType: 'json',
@@ -231,7 +238,7 @@
                 $("#idStr").val(data.ID);
                 var index = top.layer.open({
                     type: 2,
-                    title: '编辑老师',
+                    title: '编辑单词信息',
                     skin: 'layui-layer-rim',//加上边框
                     area: ['820px', '680px'],
                     content: 'Word_AddOrEdit.html' + "?id=" + data.id
@@ -289,7 +296,7 @@
         layui.use(['jquery', 'layer'], function () {
             var $ = layui.$;
             $.ajax({
-                url: parent.Domain+"api/class/listClassVo",
+                url: parent.Domain + "api/class/listClassVo",
                 type: 'Get',
                 dataType: 'json',
                 success: function (response) {
@@ -303,12 +310,13 @@
             });
             form.on('select(selectclass)', function (data) {//绑定select的onchange事件
                 $.ajax({
-                    url: parent.Domain+"api/lesson/listLessonChoose",
+                    url: parent.Domain + "api/lesson/listLessonChoose",
                     type: 'Get',
                     data: { sourceSn: data.value },//data.value即为selectclass的选中的值
                     dataType: 'json',
                     success: function (response) {
                         $("#selectlesson").empty();
+                        $("#selectlesson").append(new Option("请选择课节", ""));
                         var data = response.data;
                         $.each(data, function (index, item) {
                             $("#selectlesson").append(new Option(item.name, item.id));
