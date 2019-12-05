@@ -140,7 +140,7 @@
                             dataType: 'json',
                             success: function (res) {
                                 if (res.code == 200) {
-                                    $(".layui-laypage-btn").click();
+                                    parent.window['bodyPage'].layui.table.reload("teacherinfo_id");//刷新父页面表格
                                     layer.msg(res.msg, {
                                         time: 3000,
                                         anim: 4
@@ -178,7 +178,7 @@
                             dataType: 'json',
                             success: function (res) {
                                 if (res.code == 200) {
-                                    $(".layui-laypage-btn").click();
+                                    parent.window['bodyPage'].layui.table.reload("teacherinfo_id");//刷新父页面表格
                                     layer.msg(res.msg, {
                                         time: 3000,
                                         anim: 4
@@ -230,7 +230,6 @@
                             dataType: 'json',
                             success: function (res) {
                                 if (res.code == 200) {
-                                    $(".layui-laypage-btn").click();
                                     layer.msg(res.msg, {
                                         time: 3000,
                                         anim: 4

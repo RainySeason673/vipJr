@@ -50,15 +50,15 @@
         <div class="layui-form-item">
             <label class="layui-form-label">上传图片<span style="color:red;font-size:x-large">*</span></label>
             <div class="layui-inline">
-                <button type="button" class="layui-btn" id="detail_btn">购买详情图</button><input class="layui-upload-file"
+                <button type="button" class="layui-btn img-btn-width" id="detail_btn">购买详情图</button><input class="layui-upload-file"
                     type="file" accept="" name="detail">
             </div>
             <div class="layui-inline">
-                <button type="button" class="layui-btn" id="phone_btn">课程列表图(手机)</button><input
+                <button type="button" class="layui-btn img-btn-width" id="phone_btn">课程列表图(手机)</button><input
                     class="layui-upload-file" type="file" accept="" name="phone">
             </div>
             <div class="layui-inline">
-                <button type="button" class="layui-btn" id="pad_btn">课程列表图(pad)</button><input class="layui-upload-file"
+                <button type="button" class="layui-btn img-btn-width" id="pad_btn">课程列表图(pad)</button><input class="layui-upload-file"
                     type="file" accept="" name="pad">
             </div>
         </div>
@@ -92,7 +92,7 @@
 </html>
 <style>
     .layui-upload-img {
-        width: 78px;
+        width: 150px;
         height: 92px;
         margin: 0 0 10px 0;
     }
@@ -100,6 +100,10 @@
     img[src=""],
     img:not([src]) {
         opacity: 0;
+    }
+    .img-btn-width{
+        width:150px;
+        text-align: center;
     }
 </style>
 <script>

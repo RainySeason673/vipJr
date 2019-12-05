@@ -36,25 +36,26 @@
             </div>
         </div>
         <div class="layui-form-item">
-                <div class="layui-inline">
-                    <label class="layui-form-label">注释</label>
-                    <div class="layui-input-inline">
-                        <input type="text" name="comment" lay-verify="required" autocomplete="off" class="layui-input">
-                    </div>
+            <div class="layui-inline">
+                <label class="layui-form-label">注释</label>
+                <div class="layui-input-inline">
+                    <input type="text" name="comment" lay-verify="required" autocomplete="off" class="layui-input">
                 </div>
             </div>
+        </div>
         <div class="layui-form-item">
             <div class="layui-inline">
                 <label class="layui-form-label">排序</label>
                 <div class="layui-input-inline">
-                    <input type="text" name="sort" lay-verify="required" autocomplete="off" class="layui-input">
+                    <input type="text" name="sort" onkeyup="value=zhzs(this.value)" lay-verify="required|number"
+                        autocomplete="off" class="layui-input inputshortr">
                 </div>
             </div>
         </div>
         <div class="layui-form-item">
             <div class="layui-inline">
                 <label class="layui-form-label">配图</label>
-                <button type="button" class="layui-btn" id="button_id">上传图片</button><input class="layui-upload-file"
+                <button type="button" class="layui-btn img-btn-width" id="button_id">上传图片</button><input class="layui-upload-file"
                     type="file" accept="" name="file">
             </div>
         </div>
@@ -80,7 +81,7 @@
 </html>
 <style>
     .layui-upload-img {
-        width: 92px;
+        width: 150px;
         height: 92px;
         margin: 0 0 10px 0;
     }
@@ -88,6 +89,16 @@
     img[src=""],
     img:not([src]) {
         opacity: 0;
+    }
+    .inputlarger{
+        width:500px;
+    }
+    .inputshortr{
+        width:100px;
+    }
+    .img-btn-width{
+        width:150px;
+        text-align: center;
     }
 </style>
 <script>
@@ -99,7 +110,7 @@
             BindSelect(form);
             if (parseInt(idArry.id) > 0) {
                 $.ajax({
-                    url: parent.Domain+'api/lesson/word/get',
+                    url: parent.Domain + 'api/lesson/word/get',
                     type: 'Get',
                     data: { id: parseInt(idArry.id) },
                     dataType: 'json',
@@ -107,7 +118,7 @@
                         if (parseInt(res.data.id) > 0) {
                             $("#selectclass").find("option[value=" + res.data.sourceSn + "]").prop("selected", true);
                             form.render();
-                            BindLesson(form,res.data.sourceSn,res.data.lessonId);
+                            BindLesson(form, res.data.sourceSn, res.data.lessonId);
                             $("input[name='word']").val(res.data.word);
                             $("input[name='id']").val(res.data.id);
                             $("input[name='sort']").val(res.data.sort);
@@ -128,7 +139,7 @@
         //监听提交事件
         form.on('submit(go)', function (data) {
             $.ajax({
-                url: parent.Domain+'api/lesson/word/save',
+                url: parent.Domain + 'api/lesson/word/save',
                 type: 'Post',
                 contentType: 'application/json',
                 data: JSON.stringify({
@@ -136,7 +147,7 @@
                     lessonId: data.field.selectlesson,
                     sort: data.field.sort,
                     word: data.field.word,
-                    comment:data.field.comment,
+                    comment: data.field.comment,
                     imageList: [
                         {
                             "imageId": data.field.img_id_hide,
@@ -177,7 +188,7 @@
         //普通图片上传
         var uploadInst = upload.render({
             elem: '#button_id'
-            , url: parent.Domain+'api/file/upload'
+            , url: parent.Domain + 'api/file/upload'
             , before: function (obj) {
                 //预读本地文件示例，不支持ie8
                 obj.preview(function (index, file, result) {
@@ -218,7 +229,7 @@
         layui.use(['jquery', 'layer'], function () {
             var $ = layui.$;
             $.ajax({
-                url: parent.Domain+"api/class/listClassVo",
+                url: parent.Domain + "api/class/listClassVo",
                 type: 'Get',
                 async: false,
                 dataType: 'json',
@@ -232,32 +243,32 @@
                 }
             });
             form.on('select(selectclass)', function (data) {//绑定select的onchange事件
-                BindLesson(form,$("#selectclass").val(),0);
+                BindLesson(form, $("#selectclass").val(), 0);
             });
         });
     }
 
-    function BindLesson(form,sourceSn,lessonId){
+    function BindLesson(form, sourceSn, lessonId) {
         layui.use(['jquery', 'layer'], function () {
             var $ = layui.$;
             $.ajax({
-                    url: parent.Domain+"api/lesson/listLessonChoose",
-                    type: 'Get',
-                    async: false,
-                    data: { sourceSn: sourceSn },//data.value即为selectclass的选中的值
-                    dataType: 'json',
-                    success: function (response) {
-                        $("#selectlesson").empty();
-                        $("#selectlesson").append(new Option("请选择课节", ""));
-                        var data = response.data;
-                        $.each(data, function (index, item) {
-                            $("#selectlesson").append(new Option(item.name, item.id));
-                        })
-                        $("#selectlesson").find("option[value=" + lessonId + "]").prop("selected", true);
-                        form.render('select');
-                        console.log("ss");
-                    }
-                });
+                url: parent.Domain + "api/lesson/listLessonChoose",
+                type: 'Get',
+                async: false,
+                data: { sourceSn: sourceSn },//data.value即为selectclass的选中的值
+                dataType: 'json',
+                success: function (response) {
+                    $("#selectlesson").empty();
+                    $("#selectlesson").append(new Option("请选择课节", ""));
+                    var data = response.data;
+                    $.each(data, function (index, item) {
+                        $("#selectlesson").append(new Option(item.name, item.id));
+                    })
+                    $("#selectlesson").find("option[value=" + lessonId + "]").prop("selected", true);
+                    form.render('select');
+                    console.log("ss");
+                }
+            });
         });
     }
     //获取url中参数
@@ -273,5 +284,13 @@
         }
         return theRequest;
     }
-  
+    //转化正整数
+    function zhzs(value) {
+
+        value = value.replace(/[^\d]/g, '');
+        if ('' != value) {
+            value = parseInt(value);
+        }
+        return value;
+    }
 </script>

@@ -40,14 +40,14 @@
             <label class="layui-form-label">习题内容</label>
             <div class="layui-input-block">
                 <textarea name="exercisesContent" lay-verify="required" placeholder="请输入内容"
-                    class="layui-textarea"></textarea>
+                    class="layui-textarea inputlarger"></textarea>
             </div>
         </div>
         <div class="layui-form-item layui-form-text">
             <label class="layui-form-label">习题答案</label>
             <div class="layui-input-block">
                 <textarea name="exercisesAnswer" lay-verify="required" placeholder="请输入内容"
-                    class="layui-textarea"></textarea>
+                    class="layui-textarea inputlarger"></textarea>
             </div>
         </div>
         <div class="layui-form-item">
@@ -61,14 +61,14 @@
             <div class="layui-inline">
                 <label class="layui-form-label">排序</label>
                 <div class="layui-input-inline">
-                    <input type="text" name="sort" lay-verify="required" autocomplete="off" class="layui-input">
+                    <input type="text" name="sort" lay-verify="required|number" onkeyup="value=zhzs(this.value)" autocomplete="off" class="layui-input inputshortr">
                 </div>
             </div>
         </div>
         <div class="layui-form-item">
             <div class="layui-inline">
                 <label class="layui-form-label">配图</label>
-                <button type="button" class="layui-btn" id="button_id">上传图片</button><input class="layui-upload-file"
+                <button type="button" class="layui-btn img-btn-width" id="button_id">上传图片</button><input class="layui-upload-file"
                     type="file" accept="" name="file">
             </div>
         </div>
@@ -94,7 +94,7 @@
 </html>
 <style>
     .layui-upload-img {
-        width: 92px;
+        width: 150px;
         height: 92px;
         margin: 0 0 10px 0;
     }
@@ -102,6 +102,16 @@
     img[src=""],
     img:not([src]) {
         opacity: 0;
+    }
+    .inputlarger{
+        width:500px;
+    }
+    .inputshortr{
+        width:100px;
+    }
+    .img-btn-width{
+        width:150px;
+        text-align: center;
     }
 </style>
 <script>
@@ -118,9 +128,10 @@
                     data: { id: parseInt(idArry.id) },
                     dataType: 'json',
                     success: function (res) {
-                        $("#selectclass").find("option[value=" + res.data.sourceSn + "]").prop("selected", true);
-                            form.render();
                         if (parseInt(res.data.id) > 0) {
+                            $("#selectclass").find("option[value=" + res.data.sourceSn + "]").prop("selected", true);
+                            form.render();
+                            BindLesson(form,res.data.sourceSn,res.data.lessonId);
                             console.log(res.data);
                             $("input[name='id']").val(res.data.id);
                             $("input[name='exercisesTitle']").val(res.data.exercisesTitle);
@@ -275,4 +286,13 @@
         }
         return theRequest;
     }
+    //转化正整数
+    function zhzs(value) {
+
+value = value.replace(/[^\d]/g, '');
+if ('' != value) {
+    value = parseInt(value);
+}
+return value;
+}
 </script>

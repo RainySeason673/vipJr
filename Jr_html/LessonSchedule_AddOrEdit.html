@@ -36,7 +36,7 @@
                 </div>
             </div>
         </div>
-        <div class="layui-form-item">
+        <!-- <div class="layui-form-item">
             <div class="layui-inline">
                 <label class="layui-form-label">结束时间<span style="color:red;font-size:x-large">*</span></label>
                 <div class="layui-input-inline">
@@ -44,9 +44,9 @@
                         id="endTime" placeholder="yyyy-MM-dd">
                 </div>
             </div>
-        </div>
+        </div> -->
 
-        <div style="float:right;margin-right:100px;">
+        <div style="float:right;margin-right:100px;margin-top: 200px;">
             <div class="layui-input-block">
                 <button type="button" class="layui-btn" lay-submit lay-filter="go">提交</button>
                 <button type="reset" class="layui-btn layui-btn-primary">重置</button>
@@ -113,7 +113,7 @@
                     lessonId: data.field.selectlesson,
                     sourceSn: data.field.selectclass,
                     beginTime: data.field.beginTime,
-                    endTime: data.field.endTime,
+                    //endTime: data.field.endTime,
                 }),
                 dataType: 'json',
                 success: function (res) {
@@ -200,5 +200,13 @@
         }
         return theRequest;
     }
+//转化正整数
+function zhzs(value) {
 
+value = value.replace(/[^\d]/g, '');
+if ('' != value) {
+    value = parseInt(value);
+}
+return value;
+}
 </script>

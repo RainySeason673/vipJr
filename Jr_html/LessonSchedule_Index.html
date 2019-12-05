@@ -85,11 +85,11 @@
             }
             , cols: [[
                 { type: 'checkbox', fixed: 'left' }
-                , { field: 'id', title: 'ID', fixed: 'left', width: 89, unresize: true, sort: true }
+                // , { field: 'id', title: 'ID', fixed: 'left', width: 89, unresize: true, sort: true }
                 , { field: 'className', title: '课程名称', edit: 'text' }
                 , { field: 'lessonName', title: '课节名称', edit: 'text' }
                 , { field: 'beginTime', title: '开始时间', edit: 'text' }
-                , { field: 'endTime', title: '结束时间', edit: 'text' }
+                //, { field: 'endTime', title: '结束时间', edit: 'text' }
                 , { fixed: 'right', title: '操作', toolbar: '#barDemo' }
             ]]
             , page: true
@@ -105,17 +105,23 @@
                         parent.layer.msg("您尚未选择任何数据！");
                         return;
                     }
-                    layer.confirm('确定要禁用所选数据吗', function (index) {
+                    parent.layer.confirm('确定要禁用所选数据吗', function (index) {
+                        var idStr = "";
                         var $ = layui.$;
+                        for (i = 0; i < data.length; i++) {
+                            idStr += data[i].id + ",";
+                        }
+                        if (idStr.length > 1) {
+                            idStr = idStr.substring(0, idStr.lastIndexOf(','));
+                        }
                         $.ajax({
                             url: parent.Domain+'api/lesson/schedule/delete',
                             type: 'Post',
-                            contentType: 'application/json',
-                            data: JSON.stringify(data),
+                            data: { idList: idStr, status: 0 },//1是代表删除，0是代表恢复
                             dataType: 'json',
                             success: function (res) {
                                 if (res.code == 200) {
-                                    $(".layui-laypage-btn").click();
+                                    parent.window['bodyPage'].layui.table.reload("lessonscheduleinfo_id");//刷新父页面表格
                                     layer.msg(res.msg, {
                                         time: 3000,
                                         anim: 4
@@ -142,7 +148,7 @@
                         id: 100,
                         title: '添加排课',
                         skin: 'layui-layer-rim',//加上边框
-                        area: ['820px', '720px'],
+                        area: ['800px', '550px'],
                         content: 'LessonSchedule_AddOrEdit.html',
                     });
 
@@ -165,7 +171,6 @@
                             dataType: 'json',
                             success: function (res) {
                                 if (res.code == 200) {
-                                    $(".layui-laypage-btn").click();
                                     layer.msg(res.msg, {
                                         time: 3000,
                                         anim: 4
@@ -190,7 +195,7 @@
                     type: 2,
                     title: '编辑排课信息',
                     skin: 'layui-layer-rim',//加上边框
-                    area: ['820px', '720px'],
+                    area: ['80px', '550px'],
                     content: 'LessonSchedule_AddOrEdit.html'+"?id="+data.id,
                 });
             }
