@@ -1,4 +1,4 @@
-<script src="../layui/layui.js"></script>
+﻿<script src="../layui/layui.js"></script>
 <link href="../layui/css/layui.css" rel="stylesheet" />
 <!-- <script src="../layui/lay/modules/layer.js"></script> -->
 <style>
@@ -11,18 +11,18 @@
 
 <div class="layui-form layui-card-header layuiadmin-card-header-auto" lay-filter="app-content-list" id="page">
     <div class="layui-form-item">
-        <div class="layui-inline">
-            <label class="layui-form-label">老师</label>
+        <!-- <div class="layui-inline">
+            <label class="layui-form-label">老师ID</label>
             <div class="layui-input-inline">
-                <input type="text" name="teachername" id="teachername" placeholder="请输入" autocomplete="off" class="layui-input">
+                <input type="text" name="id" id="ID" placeholder="请输入" autocomplete="off" class="layui-input">
             </div>
-        </div>
+        </div> 
         <div class="layui-inline">
-            <label class="layui-form-label">课节</label>
+            <label class="layui-form-label">姓名</label>
             <div class="layui-input-inline">
-                <input type="text" name="lessonname" id="lessonname" placeholder="请输入" autocomplete="off" class="layui-input">
+                <input type="text" name="name" id="Name" placeholder="请输入" autocomplete="off" class="layui-input">
             </div>
-        </div>
+        </div>-->
         <div class="layui-inline">
             <button class="layui-btn layuiadmin-btn-list" data-type="reload" id="search"
                 lay-filter="LAY-app-contlist-search">
@@ -36,21 +36,18 @@
 
 <script type="text/html" id="toolbarDemo">
     <div>
-        <button class="layui-btn layuiadmin-btn-list" lay-event="batchdel">批量禁用</button>
-        <button class="layui-btn layuiadmin-btn-list" lay-event="batchrecovery">批量启用</button>
+        <!-- <button class="layui-btn layuiadmin-btn-list layui-btn-disabled" >批量禁用</button>
+        <button class="layui-btn layuiadmin-btn-list layui-btn-disabled" >批量启用</button> -->
         <button class="layui-btn layuiadmin-btn-list" lay-event="add">添加</button>
     </div>
 </script>
 
 <script type="text/html" id="barDemo">
-    <a class="layui-btn layui-btn-xs" lay-event="edit">编辑</a>
-    <a class="layui-btn layui-btn-danger layui-btn-xs" lay-event="del">禁用</a>
-    <a class="layui-btn layui-btn-pass layui-btn-xs" lay-event="recovery">启用</a>
+    <a class="layui-btn layui-btn-xs" lay-event="del"">取消绑定</a>
+    <!-- <a class="layui-btn layui-btn-danger layui-btn-xs layui-btn-disabled" >禁用</a>
+    <a class="layui-btn layui-btn-pass layui-btn-xs layui-btn-disabled" >启用</a> -->
 </script>
 <!-- <script src="../layui/lay/modules/jquery.js"></script> -->
-<script type="text/html" id="videoUrl">
-    <a href="{{d.url}}" target="_blank" class="layui-table-link">查看视频</a>
-  </script>
 
 <script>
     //parent.layui.sss();
@@ -60,10 +57,10 @@
             elem: '#teacherinfo'
             , method: 'post'
             , contentType: 'application/json'
-            , url: parent.Domain+'api/lesson/video/list'
-            //,where:{pageSize:10,pageNum:1}
+            , url: parent.Domain+'api/teacher/list'
+            //,where:{name:data.field.name}
             , toolbar: '#toolbarDemo'
-            , title: '课节视频信息表'
+            , title: '老师信息表'
             , parseData: function (res) {
                 return {
                     "code": res.code,
@@ -82,45 +79,68 @@
             , cols: [[
                 { type: 'checkbox', fixed: 'left' }
                 , { field: 'id', title: 'ID', fixed: 'left', width: 89, unresize: true, sort: true }
-                , { field: 'lessonId', title: '课节编号', edit: 'text' }
-                , { field: 'lessonName', title: '课节名称', edit: 'text' }
-                , { field: 'status', title: '状态', edit: 'text' }
-                , { field: 'teacherId', title: '老师编号', edit: 'text' }
-                , {field: 'teacherName', title: '老师姓名', edit: 'text'}
-                , {field: 'urlId', width: 100, title: '视频',templet: '#videoUrl'}
-                , { fixed: 'right', width: 280, title: '操作', toolbar: '#barDemo' }
+                , { field: 'name', title: '姓名', edit: 'text' }
+                , { field: 'englishName', title: '英文名', edit: 'text' }
+                , {
+                    field: 'gender', title: '性别', sort: true, width: 89, templet: function (res) {
+                        if (res.gender == 1) {
+                            return "男";
+                        } else {
+                            return "女";
+                        }
+                    }
+                }
+                , {
+                    field: 'headImgUrl', title: '头像', templet: function (res) {
+                        return "<img style='display:inline-block;width:100%;height:120%;' src='" + res.headImgUrl + "' />";
+                    }
+                }
+                , {
+                    field: 'introduction', title: '介绍', edit: 'text'
+                }
+                , {
+                    field: 'isdel', title: '状态', width: 79, sort: true, templet: function (res) {
+                        if (res.isDel == "0") {
+                            // return " <input type=\"checkbox\" name=\"switch\" lay-skin=\"switch\" lay-text=\"正常|禁用\" checked>";
+                            return "正常";
+                        } else {
+                            // return " <input type=\"checkbox\" name=\"switch\" lay-skin=\"switch\" lay-text=\"正常|禁用\">";
+                            return "禁用";
+                        }
+                    }
+                }
+
+                , {
+                    field: 'createAt', width: 189, title: '创建时间'
+                }
+                , { fixed: 'right', title: '操作', toolbar: '#barDemo' }
             ]]
             , page: true
-            , id: 'videoinfo_id'
+            , id: 'teacherinfo_id'
         });
         //监听头部工具栏事件
-        table.on('toolbar(videoinfo)', function (obj) {//
+        table.on('toolbar(teacherinfo)', function (obj) {//
             var checkStatus = table.checkStatus(obj.config.id);
-            var data = checkStatus.data;
             switch (obj.event) {
                 case 'batchdel':
-                if (!data.lenght > 0) {
-                        parent.layer.msg("您尚未选择任何数据！");
-                        return;
-                    }
-                    layer.confirm('真的删除吗', function (index) {
-                        var idStr="";
+                    parent.top.layer.confirm('确定要禁用所选数据吗', function (index) {
+                        var data = checkStatus.data;
+                        var idStr = "";
                         var $ = layui.$;
-                       for (i=0;i<data.length;i++)
-                       {
-                            idStr+=data[i].id+",";
-                       }
-                       if(idStr.length>1){
-                        idStr = idStr.substring(0, idStr.lastIndexOf(','));
-                       }
+                        for (i = 0; i < data.length; i++) {
+                            idStr += data[i].id + ",";
+                        }
+                        if (idStr.length > 1) {
+                            idStr = idStr.substring(0, idStr.lastIndexOf(','));
+                        }
                         $.ajax({
-                            url: parent.Domain+'api/lesson/video/delete',
+                            url: parent.Domain+'api/teacher/delete',
                             type: 'Post',
-                            data: {idList:idStr,status:1},//1是代表删除，0是代表恢复
+                            data: { idList: idStr, status: 1 },//1是代表删除，0是代表恢复
                             dataType: 'json',
                             success: function (res) {
                                 if (res.code == 200) {
-                                    $(".layui-laypage-btn").click();
+                                    parent.window['bodyPage'].layui.table.reload("teacherinfo_id");//刷新父页面表格
                                     layer.msg(res.msg, {
                                         time: 3000,
                                         anim: 4
@@ -136,30 +156,29 @@
                             }
                         });
 
-                        layer.close(index);
+                        parent.top.layer.close(index);
 
                     });
                     break;
-                    case 'batchrecovery':
-                    layer.confirm('真的恢复吗', function (index) {
+                case 'batchrecovery':
+                    parent.top.layer.confirm('确定要恢复所选数据吗', function (index) {
                         var data = checkStatus.data;
-                        var idStr="";
+                        var idStr = "";
                         var $ = layui.$;
-                       for (i=0;i<data.length;i++)
-                       {
-                            idStr+=data[i].id+",";
-                       }
-                       if(idStr.length>1){
-                        idStr = idStr.substring(0, idStr.lastIndexOf(','));
-                       }
+                        for (i = 0; i < data.length; i++) {
+                            idStr += data[i].id + ",";
+                        }
+                        if (idStr.length > 1) {
+                            idStr = idStr.substring(0, idStr.lastIndexOf(','));
+                        }
                         $.ajax({
-                            url: parent.Domain+'api/lesson/video/delete',
+                            url: parent.Domain+'api/teacher/delete',
                             type: 'Post',
-                            data: {idList:idStr,status:0},//1是代表删除，0是代表恢复
+                            data: { idList: idStr, status: 0 },//1是代表删除，0是代表恢复
                             dataType: 'json',
                             success: function (res) {
                                 if (res.code == 200) {
-                                    $(".layui-laypage-btn").click();
+                                    parent.window['bodyPage'].layui.table.reload("teacherinfo_id");//刷新父页面表格
                                     layer.msg(res.msg, {
                                         time: 3000,
                                         anim: 4
@@ -175,29 +194,42 @@
                             }
                         });
 
-                        layer.close(index);
+                        parent.top.layer.close(index);
 
                     });
+                    break;
+                case 'add':
+                    $("#idStr").val("");
+                    parent.top.layer.open({
+                        type: 2,
+                        maxmin: true,
+                        shadeclose: true,
+                        id: 100,
+                        title: '绑定录课老师',
+                        skin: 'layui-layer-rim',//加上边框
+                        area: ['820px', '680px'],
+                        content: 'changerecordteacher.html',
+                    });
+
                     break;
             }
         });
 
         //监听行工具事件
-        table.on('tool(videoinfo)', function (obj) {
+        table.on('tool(teacherinfo)', function (obj) {
             var data = obj.data;
             if (obj.event == 'del') {
-                layer.confirm('真的删除行吗？', function (index) {
+                layer.confirm('确定要禁用该行数据吗', function (index) {
                     obj.del();//样式删除
                     layui.use('jquery', function () {
                         var $ = layui.$;
                         $.ajax({
-                            url: parent.Domain+'api/lesson/video/delete',
+                            url: parent.Domain+'api/teacher/delete',
                             type: 'Post',
-                            data: {idList:data.ID,status:1},
+                            data: { idList: data.ID, status: 1 },
                             dataType: 'json',
                             success: function (res) {
                                 if (res.code == 200) {
-                                    $(".layui-laypage-btn").click();
                                     layer.msg(res.msg, {
                                         time: 3000,
                                         anim: 4
@@ -217,13 +249,14 @@
                     layer.close(index);//关闭确认框
                 });
             } else if (obj.event == 'edit') {
-                $("#idStr").val(data.ID);
+                $("#idStr").val(data.id);
                 var index = top.layer.open({
                     type: 2,
-                    title: '编辑视频信息',
+                    title: '编辑老师信息',
                     skin: 'layui-layer-rim',//加上边框
                     area: ['820px', '680px'],
-                    content: 'Video_AddOrEdit.html'
+                    content: 'Teacher_AddOrEdit.html'+"?id="+data.id
+                    
                 });
             }
         });
@@ -258,11 +291,10 @@
         var $ = layui.$, active = {
             //layui 搜索模块Start
             reload: function () {
-                table.reload('videoinfo_id', {
+                table.reload('teacherinfo_id', {
                     page: { curr: 1 },
                     where: {
-                        ID: $("#ID").val(),
-                        Name: $("#Name").val(),
+                        name: document.getElementById("Name").value,
                     }
                 });
             }

@@ -154,9 +154,9 @@
                             $("#selectclass").find("option[value=" + res.data.sourceSn + "]").prop("selected", true);
                             form.render();
                             $("input[name='name']").val(res.data.name);
-                            $("input[name='introduction']").val(res.data.introduction);
+                            $("textarea[name='introduction']").val(res.data.introduction);
                             $("input[name='sort']").val(res.data.sort);
-                            $("input[name='grammar']").val(res.data.grammar);
+                            $("textarea[name='grammar']").val(res.data.grammar);
                             $("input[name='learnTarget']").val(res.data.learnTarget);
                             $("input[name='sentencePattern']").val(res.data.sentencePattern);
                             for (i = 0; i < res.data.imageList.length; i++) {
